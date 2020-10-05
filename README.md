@@ -1,21 +1,38 @@
 # DJIPSDKVideoStreamCheckTool
 
 ## Introduction
-PSDK video stream check tool, used to check whether the specified video stream conforms to the PSDK video stream 
-standard. The tool support UDP transmission or file as input, and output check result. Please refer to 
-[DJI developer site](https://developer.dji.com/document/65de35b8-78ff-4199-b3ab-ce57ea95301b) for details of the PSDK 
-video steam standard.
+The PSDK video stream check tool is used to check whether the specified video stream conforms to the PSDK video stream standard. The tool supports UDP transmission or a file as input and outputs the results for each individual frame. 
+
+Please refer to the [DJI developer site](https://developer.dji.com/document/65de35b8-78ff-4199-b3ab-ce57ea95301b) for details of the PSDK video steam encoding requirements.
 
 ## Build Steps
-1. `cd` to DJIPSDKVideoStreamCheckTool/project directory;
-2. use `mkdir build` command to create a directory;
-3. `cmake ..`
-4. `make`
+1. Clone the DJIPSDKVideoStreamCheckTool
+```
+$ git clone https://github.com/hatchbed/DJIPSDKVideoStreamCheckTool.git
+```
+2. Move to the project directory
+``` 
+$ cd DJIPSDKVideoStreamCheckTool/project
+```
+2. Create a build dirctory and move to that folder
+```
+$ mkdir build; cd build
+```
+3. Run cmake (NOTE: cmake version must be version 3.14 or higher).  
+```
+$ cmake ..
+```
+4. Compile the tool
+```
+$ make
+```
 
 ## Usage
-Please get help and usage by run `./stream_check_tool -h` command in Linux terminal. Just like
 
-```shell script
+#### Tool Usage Options 
+To see the usage options run `./stream_check_tool -h`. Example: 
+
+```
 dji@manifold2:~/Documents/DJIPSDKVideoStreamCheckTool/project/build$ ./stream_check_tool -h
 
 stream_check_tool usage:
@@ -33,9 +50,9 @@ case 2: video file as input
 ```
 
 #### Video File as Input 
-Use below command to check local video file, and you will get output as below.
+Example of checking a local video file that was encoded to the DJI-H264 requirements:
 
-```shell script
+```
 dji@manifold2:~/Documents/DJIPSDKVideoStreamCheckTool/project/build$ ./stream_check_tool -f -i test.h264 -t DJI-H264
 
 [Passed] 0.stream size(reference 7.3.2.1.1)
@@ -54,10 +71,9 @@ dji@manifold2:~/Documents/DJIPSDKVideoStreamCheckTool/project/build$ ./stream_ch
 ```
 
 #### UDP Transmission as Input
-Ensure that the destination address of the video stream is 127.0.0.1 and the port can be customized such as 23003. 
-Use below command to check video stream from UDP transmission, and you will get output as below.
+Below is an example of checking a video stream that is encoded to the DJI-H264 requirements.  Ensure that the destination address of the video stream is 127.0.0.1. 
 
-```shell script
+```
 dji@manifold2:~/Documents/DJIPSDKVideoStreamCheckTool/project/build$ ./stream_check_tool -u -p 23003 -t DJI-H264
 udp reader mode, port 23003
 
