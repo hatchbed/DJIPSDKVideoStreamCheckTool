@@ -6,26 +6,49 @@ The PSDK video stream check tool is used to check whether the specified video st
 Please refer to the [DJI developer site](https://developer.dji.com/document/65de35b8-78ff-4199-b3ab-ce57ea95301b) for details of the PSDK video steam encoding requirements.
 
 ## Build Steps
-1. Clone the DJIPSDKVideoStreamCheckTool
+Clone the DJIPSDKVideoStreamCheckTool
 ```
 $ git clone https://github.com/hatchbed/DJIPSDKVideoStreamCheckTool.git
 ```
-2. Move to the project directory
+Move to the project directory
 ``` 
 $ cd DJIPSDKVideoStreamCheckTool/project
 ```
-2. Create a build dirctory and move to that folder
+Create a build dirctory and move to that folder
 ```
 $ mkdir build; cd build
 ```
-3. Run cmake (NOTE: cmake version must be version 3.14 or higher).  
+Run cmake. NOTE: your cmake version must be version 3.14 or higher. To check your cmake version run `cmake --version`. If your cmake version is too low and you don't want to upgrade your system cmake version see Section "Temporary CMake" below.
 ```
 $ cmake ..
 ```
-4. Compile the tool
+Compile the tool
 ```
 $ make
 ```
+
+## Temporary CMake
+If your cmake is not version 3.14 or above and you do not want to permanently update your system cmake follow the below instructions.
+
+Download the cmake linux binaries from [here](https://cmake.org/download/).  The current version is: cmake-3.18.3-Linux-x86_64.tar.gz
+
+Move to the directory where the file is stored and untar the files.  Example:
+```
+$ cd ~/Downloads
+$ tar -zxvf cmake-3.18.3-Linux-x86_64.tar.gz
+```
+
+Move to the DJIPSDKVideoStreamCheckTool build directory. Example:
+```
+$ cd ~/DJIPSDKVideoStreamCheckTool/project/build
+```
+
+Use the temporary cmake to configure the DJIPSDKVideoStreamCheckTool. Example:
+```
+$ ~/Downloads/cmake-3.18.3-Linux-x86_64/bin/cmake .. 
+```
+
+Complete the remainder of the build as described in Section "Build Steps"
 
 ## Usage
 
