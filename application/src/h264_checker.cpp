@@ -149,9 +149,16 @@ int H264Checker::decode(JBuffer *buffer)
 
     ret = avcodec_send_packet(mCtx, mPkt);
     if (ret < 0) {
-        JLOGF("Error sending a packet for decoding");
+        JLOGF("Error: avcodec_send_packet returned error when decoding packet from av_parser_parse2, packet size %d",mPkt->size);
+        printf("\nDebug: Hex data from failed packet -                                                                      \n");
+        for (int i=0;i<mPkt->size;i++)
+        {
+            printf("%02x ",mPkt->data[i]);
+        }
+        printf("\n\n");
 //        exit(1);
     }
+
 
     while (ret >= 0) {
         ret = avcodec_receive_frame(mCtx, mFrame);
@@ -163,7 +170,7 @@ int H264Checker::decode(JBuffer *buffer)
             exit(1);
         }
 
-        JLOGU("Decode frame done! Frame index:%4d", mCtx->frame_number);
+        JLOGU("Decode frame done! Frame index:%4d                                                              ", mCtx->frame_number);
 
         /* dump yuv */
 #ifndef PROG_RELEASE
@@ -212,78 +219,78 @@ int H264Checker::checkFrame()
     frameCount++;
 
     if (mPkt->size > 256 * 1024) {
-        JLOGR_FAILED("0.stream size is larger than 256K, reference 7.3.2.1.1");
+        JLOGR_FAILED("0.stream size is larger than 256K, reference 7.3.2.1.1                 ");
     } else {
         totalCount++;
-        JLOGR_PASSED("0.stream size(reference 7.3.2.1.1)");
+        JLOGR_PASSED("0.stream size(reference 7.3.2.1.1)                                     ");
     }
 
     /*! Stream standard 1: profile_idc */
     if (sps->profile_idc != 66 && sps->profile_idc != 77 && sps->profile_idc != 100) {
-        JLOGR_FAILED("1.profile_idc %d, should be 66, 77 or 100, reference 7.3.2.1.1",
+        JLOGR_FAILED("1.profile_idc %d, should be 66, 77 or 100, reference 7.3.2.1.1         ",
                      sps->profile_idc);
     } else {
         totalCount++;
-        JLOGR_PASSED("1.profile_idc (reference 7.3.2.1.1)");
+        JLOGR_PASSED("1.profile_idc (reference 7.3.2.1.1)                                    ");
     }
 
     /*! Stream standard 2: level_idc */
     if (sps->level_idc > 51) {
-        JLOGR_FAILED("2.level_idc %0.1f, should less than 5.1, reference 7.3.2.1.1",
+        JLOGR_FAILED("2.level_idc %0.1f, should less than 5.1, reference 7.3.2.1.1           ",
                      sps->level_idc / 10.0);
     } else {
         totalCount++;
-        JLOGR_PASSED("2.level_idc (reference 7.3.2.1.1)");
+        JLOGR_PASSED("2.level_idc (reference 7.3.2.1.1)                                      ");
     }
 
     /*! Stream standard 3: chroma_format_idc */
     if (sps->chroma_format_idc != 1) {
-        JLOGR_FAILED("3.chroma_format_idc %d, should be 1(YUV420), reference 7.3.2.1.1",
+        JLOGR_FAILED("3.chroma_format_idc %d, should be 1(YUV420), reference 7.3.2.1.1       ",
                      sps->chroma_format_idc);
     } else {
         totalCount++;
-        JLOGR_PASSED("3.YUV420 chroma_format_idc (reference 7.3.2.1.1)");
+        JLOGR_PASSED("3.YUV420 chroma_format_idc (reference 7.3.2.1.1)                       ");
     }
 
     /*! Stream standard 4: bit_depth_chroma */
     if (sps->bit_depth_chroma != 8 && sps->bit_depth_luma != 8) {
         JLOGR_FAILED("4.bit_depth_luma_minus8 %d bit_depth_chroma_minus8 %d"
-                     ", should be 0(only 8-bit depth allowed), reference 7.3.2.1.1",
+                     ", should be 0(only 8-bit depth allowed), reference 7.3.2.1.1           ",
                      sps->bit_depth_luma - 8, sps->bit_depth_chroma - 8);
     } else {
         totalCount++;
-        JLOGR_PASSED("4.chroma and luma only allow 8 bit (reference 7.3.2.1.1)");
+        JLOGR_PASSED("4.chroma and luma only allow 8 bit (reference 7.3.2.1.1)               ");
     }
 
     /* TODO: pic??? seq_scaling_matrix_present is not allowed */
     /*! Stream standard 5: scaling_matrix_present */
     if (sps->scaling_matrix_present != 0) {
         JLOGR_FAILED("5.seq_scaling_matrix_presenst_flag %d"
-                     ", should be 0, reference 7.3.2.1.1 and 7.3.2.2",
+                     ", should be 0, reference 7.3.2.1.1 and 7.3.2.2                         ",
                      sps->scaling_matrix_present);
     } else {
         totalCount++;
-        JLOGR_PASSED("5.seq_scaling_matrix_presenst_flag (reference 7.3.2.1.1 and 7.3.2.2)");
+        JLOGR_PASSED("5.seq_scaling_matrix_presenst_flag (reference 7.3.2.1.1 and 7.3.2.2)   ");
     }
 
     /*! Stream standard 6: frame_mbs_only_flag */
     if (sps->frame_mbs_only_flag != 1) {
-        JLOGR_FAILED("6.frame_mbs_only_flag %d, should be 1, reference 7.3.2.1.1",
+        JLOGR_FAILED("6.frame_mbs_only_flag %d, should be 1, reference 7.3.2.1.1             ",
                      sps->frame_mbs_only_flag);
     } else {
         totalCount++;
-        JLOGR_PASSED("6.frame_mbs_only_flag (reference 7.3.2.1.1)");
+        JLOGR_PASSED("6.frame_mbs_only_flag (reference 7.3.2.1.1)                            ");
     }
 
     /*! Stream standard 7: slice type */
     if (ff_pict_type_to_slice_type[mParser->pict_type] != 0 &&
         ff_pict_type_to_slice_type[mParser->pict_type] != 2) {
 
-        JLOGR_FAILED("[7.slice_type %d, should be 0 or 2, reference 7.3.3",
+        JLOGR_FAILED("[7.slice_type %d, should be 0 or 2, reference 7.3.3                    ",
                      ff_pict_type_to_slice_type[mParser->pict_type]);
     } else {
         totalCount++;
-        JLOGR_PASSED("7.slice_type (reference 7.3.3)");
+        JLOGR_PASSED("7.slice_type (reference 7.3.3)                                         ");
     }
 
 #if 0 /* TODO: could open it, if open it it means more strictly for ref_count check */
